@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -95,7 +95,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
               key={item.path}
               to={item.path}
               className={({ isActive }) => `
-                nav-item ${isActive ? 'active' : ''}
+                flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium
+                transition-colors duration-200
+                ${isActive 
+                  ? 'bg-sidebar-accent text-sidebar-accent-foreground' 
+                  : 'text-sidebar-foreground/80 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}
                 ${!isOpen ? 'justify-center px-0' : ''}
               `}
             >
