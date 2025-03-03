@@ -15,6 +15,7 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  Home,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -89,6 +90,20 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, toggle }) => {
       </div>
       
       <ScrollArea className="flex-1 px-3 py-4">
+        <NavLink
+          to="/"
+          className={({ isActive }) => `
+            flex items-center gap-3 px-3 py-2 mb-2 rounded-md text-sm font-medium
+            transition-colors duration-200 bg-primary text-primary-foreground hover:bg-primary/90
+            ${!isOpen ? 'justify-center px-0' : ''}
+          `}
+        >
+          <Home className="h-5 w-5" />
+          {isOpen && <span>Home</span>}
+        </NavLink>
+
+        <Separator className="my-2" />
+        
         <nav className="flex flex-col gap-1">
           {navigationItems.map((item) => (
             <NavLink
