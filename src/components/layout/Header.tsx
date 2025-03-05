@@ -23,12 +23,12 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
   };
 
   return (
-    <header className="h-16 px-6 flex items-center justify-between border-b border-border/40 bg-background z-20 animate-fade-in sticky top-0">
+    <header className="h-16 px-4 md:px-6 flex items-center justify-between border-b border-border/40 bg-background z-20 animate-fade-in sticky top-0">
       <div className="flex items-center gap-4">
-        <div className="relative w-64">
+        <div className="relative w-full max-w-[200px] md:max-w-[256px] hidden sm:block">
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input 
-            placeholder="Search assets, reports..." 
+            placeholder="Search assets..." 
             className="pl-8 h-9 bg-background border-muted" 
           />
         </div>

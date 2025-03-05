@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Search, FileText, Download, Filter, Calendar } from "lucide-react";
 
 const Reports = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All Reports");
   
   const reportCategories = [
     "All Reports",
@@ -76,11 +76,11 @@ const Reports = () => {
     : reportsList.filter(report => report.category === selectedCategory);
   
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex flex-col gap-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold tracking-tight">Reports</h1>
-          <Button>
+    <div className="container mx-auto px-4 py-4 sm:p-6">
+      <div className="flex flex-col gap-4 sm:gap-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Reports</h1>
+          <Button className="w-full sm:w-auto">
             <FileText className="h-4 w-4 mr-2" />
             Generate New Report
           </Button>
@@ -88,18 +88,18 @@ const Reports = () => {
         
         <Separator />
         
-        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-4">
           <div className="relative flex-1 w-full">
             <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search reports..." className="pl-10 w-full" />
           </div>
           
-          <div className="flex gap-2 w-full md:w-auto">
+          <div className="flex gap-2 w-full sm:w-auto">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex gap-2">
+                <Button variant="outline" className="flex gap-2 w-full sm:w-auto">
                   <Filter className="h-4 w-4" />
-                  <span>{selectedCategory === "All Reports" ? "Categories" : selectedCategory}</span>
+                  <span className="truncate max-w-[100px] sm:max-w-none">{selectedCategory === "All Reports" ? "Categories" : selectedCategory}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -114,13 +114,14 @@ const Reports = () => {
               </DropdownMenuContent>
             </DropdownMenu>
             
-            <Button variant="outline">
+            <Button variant="outline" className="aspect-square p-0 w-10 h-10 sm:w-auto sm:h-auto sm:aspect-auto sm:p-2">
               <Calendar className="h-4 w-4" />
+              <span className="sr-only sm:not-sr-only sm:ml-2 hidden sm:inline">Date</span>
             </Button>
           </div>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {filteredReports.map((report, i) => (
             <Card key={i} className="hover:shadow-md transition-shadow">
               <CardHeader className="pb-2">

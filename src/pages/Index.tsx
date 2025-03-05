@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AssetSummary from '@/components/dashboard/AssetSummary';
 import AssetDistribution from '@/components/dashboard/AssetDistribution';
 import RecentActivities from '@/components/dashboard/RecentActivities';
@@ -23,6 +23,26 @@ import { Button } from '@/components/ui/button';
 const Index = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activePanel, setActivePanel] = useState<string | null>(null);
+  
+  // Close sidebar on mobile automatically
+  useEffect(() => {
+    const checkWidth = () => {
+      if (window.innerWidth < 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+    
+    // Initial check
+    checkWidth();
+    
+    // Add event listener
+    window.addEventListener('resize', checkWidth);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
   
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -253,21 +273,21 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Sidebar isOpen={sidebarOpen} toggle={toggleSidebar} />
       
-      <div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-[70px]'}`}>
+      <div className={`transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'md:ml-[70px]'} ml-0`}>
         <Header toggleSidebar={toggleSidebar} />
         
-        <main className="p-6">
-          <div className="flex items-center justify-between mb-8">
+        <main className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
             <div>
               <h1 className="font-semibold tracking-tight">Dashboard</h1>
               <p className="text-muted-foreground">Overview of your asset management system</p>
             </div>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {activePanel && renderDetailPanel()}
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {[
                 { 
                   id: 'totalAssets', 
@@ -311,7 +331,7 @@ const Index = () => {
                   className={`dashboard-card overflow-hidden animate-fade-in cursor-pointer transition-all hover:shadow-md ${activePanel === item.id ? 'ring-2 ring-primary' : ''}`}
                   onClick={() => handleIconClick(item.id)}
                 >
-                  <CardHeader className="pb-2 pt-4 px-6 flex flex-row items-center justify-between space-y-0">
+                  <CardHeader className="pb-2 pt-4 px-4 sm:px-6 flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="text-sm font-medium text-muted-foreground">
                       {item.title}
                     </CardTitle>
@@ -319,7 +339,7 @@ const Index = () => {
                       {item.icon}
                     </div>
                   </CardHeader>
-                  <CardContent className="px-6 pb-4">
+                  <CardContent className="px-4 sm:px-6 pb-4">
                     <div className="text-2xl font-semibold">{item.value}</div>
                     <p className={`text-xs ${item.changeType === 'positive' ? 'text-emerald-600' : 'text-red-600'} flex items-center mt-1`}>
                       {item.change}
@@ -333,9 +353,13 @@ const Index = () => {
               ))}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <AssetDistribution />
-              <RecentActivities />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+              <div className="md:col-span-2 lg:col-span-1">
+                <AssetDistribution />
+              </div>
+              <div className="md:col-span-2 lg:col-span-2">
+                <RecentActivities />
+              </div>
             </div>
             
             <PerformanceMetrics />

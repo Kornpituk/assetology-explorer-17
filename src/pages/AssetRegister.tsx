@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Sidebar from '@/components/layout/Sidebar';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -32,9 +32,30 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Download, Filter, Search, MoreHorizontal } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const AssetRegister = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  
+  // Close sidebar on mobile automatically
+  useEffect(() => {
+    const checkWidth = () => {
+      if (window.innerWidth < 768) {
+        setSidebarOpen(false);
+      } else {
+        setSidebarOpen(true);
+      }
+    };
+    
+    // Initial check
+    checkWidth();
+    
+    // Add event listener
+    window.addEventListener('resize', checkWidth);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', checkWidth);
+  }, []);
   
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -107,11 +128,11 @@ const AssetRegister = () => {
     <div className="min-h-screen bg-background">
       <Sidebar isOpen={sidebarOpen} toggle={toggleSidebar} />
       
-      <div className={`transition-all duration-300 ${sidebarOpen ? 'ml-64' : 'ml-[70px]'}`}>
+      <div className={`transition-all duration-300 ${sidebarOpen ? 'md:ml-64' : 'md:ml-[70px]'} ml-0`}>
         <Header toggleSidebar={toggleSidebar} />
         
-        <main className="p-6">
-          <div className="flex items-center justify-between mb-8">
+        <main className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
             <div>
               <h1 className="font-semibold tracking-tight">Asset Register</h1>
               <p className="text-muted-foreground">Manage and track all your assets</p>
@@ -128,7 +149,7 @@ const AssetRegister = () => {
                     <Plus className="mr-2 h-4 w-4" /> Add Asset
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px]">
+                <DialogContent className="sm:max-w-[500px] max-w-[95vw]">
                   <DialogHeader>
                     <DialogTitle>Add New Asset</DialogTitle>
                     <DialogDescription>
@@ -142,7 +163,7 @@ const AssetRegister = () => {
                       <Input id="name" placeholder="Enter asset name" />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="grid gap-2">
                         <Label htmlFor="category">Category</Label>
                         <Select>
@@ -179,7 +200,7 @@ const AssetRegister = () => {
                       <Input id="location" placeholder="Enter location" />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="grid gap-2">
                         <Label htmlFor="purchase-date">Purchase Date</Label>
                         <Input id="purchase-date" type="date" />
@@ -202,7 +223,7 @@ const AssetRegister = () => {
           
           <Card className="animate-fade-in">
             <CardHeader className="pb-0">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1">
                   <CardTitle>Assets</CardTitle>
                   <CardDescription>
@@ -210,53 +231,57 @@ const AssetRegister = () => {
                   </CardDescription>
                 </div>
                 
-                <div className="flex items-center gap-3">
-                  <div className="relative w-64">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                  <div className="relative w-full sm:w-64">
                     <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input placeholder="Search assets..." className="pl-8 h-9" />
                   </div>
                   
-                  <Button variant="outline" size="sm" className="h-9">
+                  <Button variant="outline" size="sm" className="h-9 w-full sm:w-auto">
                     <Filter className="mr-2 h-4 w-4" /> Filter
                   </Button>
                 </div>
               </div>
             </CardHeader>
             
-            <CardContent className="pt-6">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Asset ID</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Location</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Purchase Date</TableHead>
-                    <TableHead>Value</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                
-                <TableBody>
-                  {assetData.map((asset) => (
-                    <TableRow key={asset.id}>
-                      <TableCell className="font-medium">{asset.id}</TableCell>
-                      <TableCell>{asset.name}</TableCell>
-                      <TableCell>{asset.category}</TableCell>
-                      <TableCell>{asset.location}</TableCell>
-                      <TableCell>{getStatusBadge(asset.status)}</TableCell>
-                      <TableCell>{asset.purchaseDate}</TableCell>
-                      <TableCell>{asset.value}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+            <CardContent className="pt-6 overflow-auto">
+              <ScrollArea className="w-full">
+                <div className="min-w-[800px]">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Asset ID</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Purchase Date</TableHead>
+                        <TableHead>Value</TableHead>
+                        <TableHead></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    
+                    <TableBody>
+                      {assetData.map((asset) => (
+                        <TableRow key={asset.id}>
+                          <TableCell className="font-medium">{asset.id}</TableCell>
+                          <TableCell>{asset.name}</TableCell>
+                          <TableCell>{asset.category}</TableCell>
+                          <TableCell>{asset.location}</TableCell>
+                          <TableCell>{getStatusBadge(asset.status)}</TableCell>
+                          <TableCell>{asset.purchaseDate}</TableCell>
+                          <TableCell>{asset.value}</TableCell>
+                          <TableCell>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </ScrollArea>
             </CardContent>
           </Card>
         </main>
