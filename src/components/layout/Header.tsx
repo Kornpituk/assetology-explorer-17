@@ -1,25 +1,42 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Bell, Search, User, Moon, Sun } from 'lucide-react';
+import { Bell, Search, User, Moon, Sun, LogOut } from 'lucide-react';
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger 
 } from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 interface HeaderProps {
   toggleSidebar: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+  const navigate = useNavigate();
   const [isDarkMode, setIsDarkMode] = React.useState(false);
+  const [user, setUser] = React.useState<{username: string, department: string} | null>(null);
+
+  React.useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   const toggleTheme = () => {
     setIsDarkMode(!isDarkMode);
     document.documentElement.classList.toggle('dark');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    toast.success('Logged out successfully');
+    navigate('/login');
   };
 
   return (
@@ -64,10 +81,20 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Help</DropdownMenuItem>
-            <DropdownMenuItem>Log out</DropdownMenuItem>
+            {user && (
+              <>
+                <div className="px-2 py-1.5 text-sm font-medium text-muted-foreground">
+                  Signed in as <span className="font-semibold text-foreground">{user.username}</span>
+                </div>
+                <div className="px-2 py-1.5 text-xs text-muted-foreground">
+                  Department: {user.department}
+                </div>
+                <DropdownMenuItem className="py-2 cursor-pointer" onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
