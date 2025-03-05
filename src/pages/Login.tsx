@@ -167,7 +167,7 @@ const Login = () => {
               </a>
             </div>
             <div className="text-xs text-center text-muted-foreground">
-              Version 1.0.0 &copy; {new Date().getFullYear()} Asset Management
+              Version 1.0.1 &copy; {new Date().getFullYear()} Asset Management Copy right by SRP
               System
             </div>
           </CardFooter>
